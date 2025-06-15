@@ -97,3 +97,42 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE delete_course (
+    IN p_C_id INT
+)
+BEGIN
+    DELETE FROM courses
+    WHERE C_id = p_C_id;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE enroll_student (
+    IN p_student_id INT,
+    IN p_course_id INT
+)
+BEGIN
+    INSERT INTO enrollments (student_id, course_id)
+    VALUES (p_student_id, p_course_id);
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE delete_enrollment_by_id (
+    IN p_en_id INT
+)
+BEGIN
+    DELETE FROM enrollments
+    WHERE EN_id = p_en_id;
+END //
+
+DELIMITER ;
+
+
