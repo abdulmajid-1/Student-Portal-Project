@@ -25,9 +25,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["user_id"] = $user["U_id"];
                 $_SESSION["name"] = $user["name"];
                 $_SESSION["role"] = $user["role"];
+
+                if($user["role"] == "admin") {
+                    header("Location: admin-dashboard.php");
+                    exit;
+                } 
+                else {
+                    header("Location: dashboard.php");
+                    exit;
+                }
                 
-                header("Location: dashboard.php");
-                exit;
+              
             } 
             else {
                 echo "Incorrect password.";

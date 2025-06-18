@@ -12,18 +12,64 @@ class StudentController {
     }
 
     public function InsertStudent(Student $objStudent): int {
-            $name = $objStudent->getName();
-            $email = $objStudent->getEmail();
-            $password = $objStudent->getPassword();
-            $role = $objStudent->getRole();
+        $S_id = $objStudent->getS_id();
+        $user_id = $objStudent->getUser_id();
+        $roll_no = $objStudent->getRoll_no();
+        $department = $objStudent->getDepartment();
+        $year = $objStudent->getYear();
 
-            $objstatment = $this->connection->prepare("CALL insert_user(?, ?, ?, ?)");
-            $objstatment->bindParam(1, $name);
-            $objstatment->bindParam(2, $email);
-            $objstatment->bindParam(3, $password);
-            $objstatment->bindParam(4, $role);
+        // Prepare the SQL statement to insert a student
+        $objstatment = $this->connection->prepare("Insert into Students (S_id, user_id, roll_no, department, year)
+            VALUES (?, ?, ?, ?, ?)");
+        $objstatment->bindParam(1, $S_id);
+        $objstatment->bindParam(2, $user_id);
+        $objstatment->bindParam(3, $roll_no);
+        $objstatment->bindParam(4, $department);
+        $objstatment->bindParam(5, $year);
+        return $objstatment->execute();
 
-            return $objstatment->execute();
+
     }
+    public function GetAllStudents(): array {
+        $query = "SELECT s.*, u.name AS Student_name FROM 
+                    students s 
+            INNER JOIN users u ON s.user_id = u.U_id;";
+
+        $objStatement = $this->connection->prepare($query);
+        $objStatement->execute();
+        $result = $objStatement->fetchAll(PDO::FETCH_ASSOC);
+        if ($result) {
+
+            return $result;
+        } 
+        else {
+
+            return [];
+        }
+    }
+
+    public function GetStudentById($id): array {
+        $query = "call getStudentByStudentId(?)";
+        $objStatement = $this->connection->prepare($query);
+        $objStatement->bindParam(1, $id, PDO::PARAM_INT);
+        $objStatement->execute();
+        $result = $objStatement->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+
+            return $result;
+        } 
+        else {
+
+            return [];
+        }
+    }
+    public function DeleteStudent($id): bool {
+        $query = "DELETE FROM STUDENTS WHERE S_id = ?";
+        $objStatement = $this->connection->prepare($query);
+        $objStatement->bindParam(1, $id, PDO::PARAM_INT);
+        $isSuccess = $objStatement->execute();
+        return $isSuccess;
+    }
+
 }
 ?>

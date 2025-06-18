@@ -1,67 +1,55 @@
 <?php
-    class Student
-    {
-        private $user_id;
-        private $name;
-        private $email;
-        private $password;
-        private $role;
+//include_once 'config.php';
 
-        public function __construct($user_id = null, $name = null, $email = null, $password = null, $role = null, $conn = null)
-        {
-            $this -> setUserID($user_id);
-            $this -> setName($name);    
-            $this -> setEmail($email);
-            // $this -> setPassword($password);
-            $this -> setRole($role);
+class Student {
+    private $S_id;
+    private $user_id;
+    private $roll_no;
+    private $department;
+    private $year;
 
-        }
-        public function setUserID($user_id)
-        {
-            $this -> user_id = $user_id;
-        }
-        public function getUserID()
-        {
-            return $this -> user_id;
-        }
-        public function setName($name)
-        {
-            $this -> name = $name;
-        }
-        public function getName()
-        {
-            return $this -> name;
-        }
-        public function setEmail($email)
-        {
-            $this -> email = $email;
-        }
-        public function getEmail()
-        {
-            return $this -> email;
-        }
-        public function setPassword($password)
-        {
-            $this -> password = $password;
-        }
-        public function getPassword()
-        {
-            return $this -> password;
-        }
-        public function setRole($role)
-        {
-            $this -> role = $role;
-        }
-        public function getRole()
-        {
-            return $this -> role;
-        }
-
-        public function __tostring()
-        {
-            return "User ID: " . $this -> getUserID() . ", Name: " . $this -> getName() . ", Email: " . $this -> getEmail() . ", Role: " . $this -> getRole();
-        }
+    public function __construct($S_id = null, $user_id = null, $roll_no = null, $department = null, $year = null) {
+        $this->S_id = $S_id;
+        $this->user_id = $user_id;
+        $this->roll_no = $roll_no;
+        $this->department = $department;
+        $this->year = $year;
     }
 
-    
+    public function setS_id($S_id) {
+        $this->S_id = $S_id;
+    }
+    public function getS_id() {
+        return $this->S_id;
+    }
+    public function setUser_id($user_id) {
+        $this->user_id = $user_id;
+    }
+    public function getUser_id() {
+        return $this->user_id;
+    }
+    public function setRoll_no($roll_no) {
+        $this->roll_no = $roll_no;
+    }
+    public function getRoll_no() {
+        return $this->roll_no;
+    }
+    public function setDepartment($department) {
+        $this->department = $department;
+    }
+    public function getDepartment() {
+        return $this->department;
+    }
+    public function setYear($year) {
+        $this->year = $year;
+    }
+    public function getYear() {
+        return $this->year;
+    }
+    public function __toString() {
+        return "Student ID: $this->S_id, User ID: $this->user_id, Roll No: $this->roll_no, Department: $this->department, Year: $this->year";
+    }
+
+}
+
 ?>

@@ -136,3 +136,26 @@ END //
 DELIMITER ;
 
 
+SELECT 
+    s.*, 
+    u.name AS Student_name
+FROM 
+    students s
+INNER JOIN 
+    users u ON s.user_id = u.U_id;
+
+DELIMITER //
+CREATE PROCEDURE getStudentByStudentId(IN p_student_id INT)
+BEGIN
+    SELECT 
+        s.*, 
+        u.name AS Student_name
+    FROM 
+        students s
+    INNER JOIN 
+        users u ON s.user_id = u.U_id
+    WHERE 
+        s.S_id = p_student_id;
+END; //
+DELIMITER ;
+
