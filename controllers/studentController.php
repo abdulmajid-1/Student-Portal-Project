@@ -71,5 +71,27 @@ class StudentController {
         return $isSuccess;
     }
 
+    public function changePassword($userId, $newPassword) {
+        // Fetch user to confirm they exist
+        $query = "SELECT * FROM Users WHERE U_id = :user_id";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            echo "User not found.";
+            return false;
+        }
+
+        // Update password
+        $query = "UPDATE Users SET password = :password WHERE U_id = :user_id";
+        $stmt = $this->connection->prepare($query);
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
 }
-?>
+
