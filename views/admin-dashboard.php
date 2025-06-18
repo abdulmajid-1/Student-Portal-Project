@@ -21,6 +21,7 @@ if (!isset($_SESSION["user_id"])) {
 <ul>
     <li><a href="enrollment-view.php">Enrollment Page</a></li>
     <li><a href="course-view.php">Course Page</a></li>
+    <li><a href="student-view.php">Student View</a></li>
     <li><a href="logout.php">Logout</a></li>
 </ul>
 
