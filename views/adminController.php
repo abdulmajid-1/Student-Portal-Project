@@ -1,12 +1,14 @@
 <?php
 session_start();
-include_once '../config/db.php'; // Include your database connection file
+include_once '../config/db.php';
+
 if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== 'admin') {
     header("Location: login.php");
     exit;
 }
+
 $objDatabaseConnection = new DatabaseConnectivity();
-$objDatabaseConnection = $objDatabaseConnection->getConnection(); // Get the PDO connection
+$connection = $objDatabaseConnection->getConnection();
 
 class AdminController {
     private $connection;
@@ -16,7 +18,6 @@ class AdminController {
     }
 
     public function changePassword($userId, $oldPassword, $newPassword) {
-        // Fetch current hashed password
         $query = "SELECT password FROM Users WHERE U_id = :user_id";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -24,45 +25,39 @@ class AdminController {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
-            echo "User not found.";
-            return false;
+            return "❌ User not found.";
         }
 
-        // Verify current password
         if (!password_verify($oldPassword, $user['password'])) {
-            echo "Current password is incorrect.";
-            return false;
+            return "❌ Current password is incorrect.";
         }
 
-        // Update to new password
         $query = "UPDATE Users SET password = :password WHERE U_id = :user_id";
         $stmt = $this->connection->prepare($query);
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
         $stmt->bindParam(':password', $hashedPassword);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
 
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            return "✅ Password changed successfully.";
+        } else {
+            return "❌ Failed to change password.";
+        }
     }
 }
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_SESSION["user_id"])) {
-        echo "You are not logged in.";
-        exit;
-    }
+$message = "";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION["user_id"];
     $oldPassword = $_POST["oldPassword"];
     $newPassword = $_POST["newPassword"];
 
     if (empty($oldPassword) || empty($newPassword)) {
-        echo "Please fill in all fields.";
-    } 
-    else {
-        $AdminController = new AdminController($objDatabaseConnection);
-        $success = $AdminController->changePassword($userId, $oldPassword, $newPassword);
-        echo $success ? "Password changed successfully." : "Failed to change password.";
+        $message = "⚠️ Please fill in all fields.";
+    } else {
+        $adminController = new AdminController($connection);
+        $message = $adminController->changePassword($userId, $oldPassword, $newPassword);
     }
 }
 ?>
@@ -71,27 +66,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Controller</title>
+    <title>Admin - Change Password</title>
     <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .header-bar {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .header-bar a:hover {
+            text-decoration: underline;
+        }
+        .main {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .message {
+            margin: 15px 0;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<div class="main">
-    <!-- <h2>Admin Controller</h2> -->
-    <title>Change Password</title>
-</head>
-<body>
-    <h2>Change Password</h2>
-    <form method="POST" action="">
-        <label for="oldPassword">Current Password:</label>
-        <input type="password" id="oldPassword" name="oldPassword" required>
-        <br><br>
 
-        <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" name="newPassword" required>
-        <br><br>
+<!-- Header -->
+<div class="header-bar">
+    <div><strong>Admin Control Panel</strong></div>
+    <div>
+        <a href="admin-dashboard.php">⬅ Back to Dashboard</a>
+        <a href="logout.php">🚪 Logout</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+    <h2>Change Password</h2>
+
+    <?php if (!empty($message)): ?>
+        <div class="message"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
+
+    <form method="POST" action="">
+        <label for="oldPassword">Current Password:</label><br>
+        <input type="password" id="oldPassword" name="oldPassword" required><br><br>
+
+        <label for="newPassword">New Password:</label><br>
+        <input type="password" id="newPassword" name="newPassword" required><br><br>
 
         <button type="submit">Change Password</button>
     </form>
 </div>
+
 </body>
 </html>

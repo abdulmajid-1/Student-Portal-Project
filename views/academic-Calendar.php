@@ -1,45 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Academic Calendar 2019-2020</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+    <style>
+      .header-bar {
+        background-color: #007bff;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header-bar a {
+        color: white;
+        text-decoration: none;
+        margin-left: 15px;
+      }
+      .header-bar a:hover {
+        text-decoration: underline;
+      }
+      .main {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #444;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      caption {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+      <div><strong>Academic Calendar</strong></div>
+      <div>
+        <a href="dashboard.php">⬅ Back to Dashboard</a>
+        <a href="logout.php">🚪 Logout</a>
+      </div>
+    </div>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Academic Calendar 2019-2020</title>
-  <link rel="stylesheet" href="../assets/style.css">
-</head>
-
-<body>
-  <div class="main">
-
-    <head>
-      <meta charset="UTF-8" />
-      <title>Academic Calendar 2019-2020</title>
-      <style>
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          font-family: Arial, sans-serif;
-        }
-
-        th,
-        td {
-          border: 1px solid #444;
-          padding: 8px;
-          text-align: center;
-        }
-
-        th {
-          background-color: #f2f2f2;
-        }
-
-        caption {
-          font-size: 1.5em;
-          font-weight: bold;
-          margin-bottom: 10px;
-        }
-      </style>
-    </head>
-
-    <body>
+    <!-- Main Content -->
+    <div class="main">
       <table>
         <caption>
           Academic Calendar 2019–2020
@@ -196,10 +216,6 @@
           </tr>
         </tbody>
       </table>
-  </div>
-</body>
-
-</html>
-</body>
-
+    </div>
+  </body>
 </html>

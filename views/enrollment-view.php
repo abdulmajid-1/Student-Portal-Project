@@ -21,22 +21,23 @@ $courseList = $objCourseController->GetAllCoursesName(); // must return C_id and
 $studentList = $objStudentController->GetAllStudentsName(); // must return S_id and name
 
 $enrollmentList = [];
+$selectedAction = $_POST["action"] ?? '';
 
-if (isset($_POST["action"])) {
-    switch ($_POST["action"]) {
+if ($selectedAction) {
+    switch ($selectedAction) {
         case 'enroll':
             $objEnrollmentModel = new EnrollmentModel();
             $objEnrollmentModel->setStudentId($_POST["student_id"]);
             $objEnrollmentModel->setCourseId($_POST["course_id"]);
 
             $isSuccess = $objEnrollmentController->enrollStudent($objEnrollmentModel);
-            echo $isSuccess ? "✅ Student enrolled successfully!" : "❌ Error enrolling student.";
+            echo $isSuccess ? "<p>✅ Student enrolled successfully!</p>" : "<p>❌ Error enrolling student.</p>";
             break;
 
         case 'delete':
             $enrollmentId = $_POST["enrollment_id"];
             $objEnrollmentController->deleteEnrollment($enrollmentId);
-            echo "🗑️ Enrollment deleted (if existed).";
+            echo "<p>🗑️ Enrollment deleted (if existed).</p>";
             break;
 
         case 'view':
@@ -57,6 +58,24 @@ if (isset($_POST["action"])) {
     <meta charset="UTF-8">
     <title>Enrollment Management</title>
     <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .header-bar {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .header-bar a:hover {
+            text-decoration: underline;
+        }
+    </style>
     <script>
         function showForm() {
             const selected = document.getElementById("actionSelector").value;
@@ -65,10 +84,29 @@ if (isset($_POST["action"])) {
             document.getElementById("viewForm").style.display = selected === "view" ? "block" : "none";
             document.getElementById("viewAllForm").style.display = selected === "view_all" ? "block" : "none";
         }
+
+        window.onload = function () {
+            const selectedAction = "<?= $selectedAction ?>";
+            if (selectedAction !== "") {
+                document.getElementById("actionSelector").value = selectedAction;
+                showForm();
+            }
+        };
     </script>
 </head>
 <body>
-<div class="main">
+
+<!-- Header -->
+<div class="header-bar">
+    <div><strong>Enrollment Management Panel</strong></div>
+    <div>
+        <a href="admin-dashboard.php">⬅ Back to Dashboard</a>
+        <a href="logout.php">🚪 Logout</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main" style="padding: 20px; max-width: 900px; margin: auto;">
     <h2>Enrollment Management</h2>
 
     <!-- Dropdown Menu -->
@@ -85,11 +123,11 @@ if (isset($_POST["action"])) {
 
     <!-- Enroll Student Form -->
     <div id="enrollForm" style="display:none;">
-        <h2>Enroll a Student</h2>
+        <h3>Enroll a Student</h3>
         <form method="post">
             <input type="hidden" name="action" value="enroll">
 
-            <label for="student_id">Select Student:</label><br>
+            <label>Select Student:</label><br>
             <select name="student_id" required>
                 <option value="">-- Select Student --</option>
                 <?php foreach ($studentList as $student): ?>
@@ -99,7 +137,7 @@ if (isset($_POST["action"])) {
                 <?php endforeach; ?>
             </select><br><br>
 
-            <label for="course_id">Select Course:</label><br>
+            <label>Select Course:</label><br>
             <select name="course_id" required>
                 <option value="">-- Select Course --</option>
                 <?php foreach ($courseList as $course): ?>
@@ -115,10 +153,10 @@ if (isset($_POST["action"])) {
 
     <!-- Delete Enrollment Form -->
     <div id="deleteForm" style="display:none;">
-        <h2>Delete an Enrollment</h2>
+        <h3>Delete an Enrollment</h3>
         <form method="post">
             <input type="hidden" name="action" value="delete">
-            <label for="enrollment_id">Enrollment ID:</label>
+            <label>Enrollment ID:</label>
             <input type="number" name="enrollment_id" required><br><br>
             <input type="submit" value="Delete Enrollment">
         </form>
@@ -126,10 +164,10 @@ if (isset($_POST["action"])) {
 
     <!-- View Enrollments by Student -->
     <div id="viewForm" style="display:none;">
-        <h2>View Enrollments by Student</h2>
+        <h3>View Enrollments by Student</h3>
         <form method="post">
             <input type="hidden" name="action" value="view">
-            <label for="student_id">Select Student:</label><br>
+            <label>Select Student:</label><br>
             <select name="student_id" required>
                 <option value="">-- Select Student --</option>
                 <?php foreach ($studentList as $student): ?>
@@ -144,7 +182,7 @@ if (isset($_POST["action"])) {
 
     <!-- View All Enrollments -->
     <div id="viewAllForm" style="display:none;">
-        <h2>View All Enrollments</h2>
+        <h3>View All Enrollments</h3>
         <form method="post">
             <input type="hidden" name="action" value="view_all">
             <input type="submit" value="View All Enrollments">
@@ -175,7 +213,6 @@ if (isset($_POST["action"])) {
             <?php endforeach; ?>
         </table>
     <?php endif; ?>
-
 </div>
 </body>
 </html>

@@ -60,8 +60,35 @@ $userList = $objUserController->getAllUsersNames(); // Must return id and name
     <meta charset="UTF-8">
     <title>Student Management</title>
     <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .header-bar {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .header-bar a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+<!-- Header Bar -->
+<div class="header-bar">
+    <div><strong>Student Management Panel</strong></div>
+    <div>
+        <a href="admin-dashboard.php">⬅ Back to Dashboard</a>
+        <a href="logout.php">🚪 Logout</a>
+    </div>
+</div>
+
 <div class="main">
     <h2>Student Management</h2>
 

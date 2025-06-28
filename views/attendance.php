@@ -16,42 +16,30 @@ $objenrollmentController = new enrollmentController($connection);
 
 $userId = $_SESSION["user_id"];
 $date = date('Y-m-d');
-
-
-$filteredAttendance = [];
-
-if (isset($_POST['show_attendance']) && !empty($_POST['filter_course_id'])) {
-    $CourseID = $_POST['filter_course_id'];
-    $teacherId = $objTeacherController->GetTeacherID($userId);
-
-    $filteredAttendance = $objTeacherController->GetAttendanceByCourse($teacherId, $CourseID);
-}
-
-$attendanceData = $objTeacherController->GetAttendanceRecords($userId);
+$teacherId = $objTeacherController->GetTeacherID($userId);
 $teacherCourses = $objTeacherController->GetTeacherCourses($userId);
 
-$selectedCourseId = null;
+$operation = $_POST['operation'] ?? null;
+$selectedCourseId = $_POST['filter_course_id'] ?? null;
+$filteredAttendance = [];
 $Enrolled_students = [];
 
-if (isset($_POST['submit_attendance']) && isset($_POST['attendance'])) {
+// Handle Attendance Marking
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_attendance']) && isset($_POST['attendance'])) {
     $courseId = $_POST['course_id'];
-    $teacherId = $objTeacherController->GetTeacherID($userId);
-  //  $studentId = 
-
     foreach ($_POST['attendance'] as $studentId => $status) {
         $objTeacherController->markAttendance($studentId, $courseId, $teacherId, $date, $status);
     }
-
-    echo "<p>Attendance marked successfully.</p>";
+    echo "<p>✅ Attendance marked successfully.</p>";
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["View-Enrolled-Students"])) {
-    if (!empty($_POST["course_id"])) {
-        $selectedCourseId = $_POST["course_id"];
+// Handle Operation Selection
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['operation_submit'])) {
+    if ($operation === 'show_attendance' && $selectedCourseId) {
+        $filteredAttendance = $objTeacherController->GetAttendanceByCourse($teacherId, $selectedCourseId);
         $Enrolled_students = $objenrollmentController->getEnrollmentbyCourseID($selectedCourseId);
-    } 
-    else {
-        echo "<p>Please select a course.</p>";
+    } elseif ($operation === 'mark_attendance' && $selectedCourseId) {
+        $Enrolled_students = $objenrollmentController->getEnrollmentbyCourseID($selectedCourseId);
     }
 }
 ?>
@@ -60,127 +48,160 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["View-Enrolled-Student
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <title>Attendance Management</title>
     <link rel="stylesheet" href="../assets/style.css">
-</head>
-<body>
-<div class="main">
-    <h2>Attendance Management</h2>
-
-
-    <title>Teacher Attendance Dashboard</title>
-
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; }
-        th, td { border: 1px solid #aaa; padding: 10px; text-align: left; }
-        th { background-color: #efefef; }
-        .mark-button { background-color: #28a745; color: white; padding: 10px 20px; margin-top: 15px; border: none; cursor: pointer; }
-        .mark-button:hover { background-color: #218838; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+       .header-bar {
+    background: linear-gradient(90deg, #004080 60%, #0074d9 100%);
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.header-bar .brand {
+    font-size: 22px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.header-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 25px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.header-bar a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+}
+        .main {
+            max-width: 1000px;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #efefef;
+        }
+        .mark-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .mark-button:hover {
+            background-color: #218838;
+        }
     </style>
-
-
-    <div>
 </head>
 <body>
-    <h2>Welcome,  <?= htmlspecialchars($_SESSION['name']) ?></h2>
-<div>
 
-  <form method="POST">
-
-    <label for="filter_course_id">Filter by Course:</label>
-    <select name="filter_course_id" id="filter_course_id" required>
-        <option value="">-- Select a Course --</option>
-        <?php foreach ($teacherCourses as $course): ?>
-            <option value="<?= htmlspecialchars($course['C_id']) ?>">
-                <?= htmlspecialchars($course['course_name']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-    <button type="submit" name="show_attendance">Show Attendance</button>
-</form>
+<div class="header-bar">
+    <div><strong>Attendance Management</strong></div>
+    <div>
+        <a href="teacher-dashboard.php">Dashboard</a>
+        <a href="logout.php">Logout</a>
+    </div>
 </div>
 
-    <?php if (isset($_POST['show_attendance'])): ?>
-        <h3>Attendance Records</h3>
-        <?php if (empty($attendanceData)) : ?>
-            <p>No attendance records found for this teacher.</p>
-        <?php else : ?>
+<div class="main">
+    <h2>Welcome, <?= htmlspecialchars($_SESSION['name']) ?></h2>
 
-    <?php
-        //<?php
-        // Step 1: Unique Dates
-        $dates = [];
-        foreach ($filteredAttendance as $date) {
-            $dates[$date['date']] = true;
-        }
-        ksort($dates); // Sort chronologically
-
-        // Step 2: Group by student & date
-        $attendanceMap = [];
-        foreach ($filteredAttendance as $singleAtten) {
-            $sid = $singleAtten['student_id'];
-            $date = $singleAtten['date'];
-            $status = $singleAtten['status'];
-            $attendanceMap[$sid][$date] = $status;
-        }
-    ?>
-
-    <table border="1" cellpadding="8" cellspacing="0">
-        <tr>
-            <th>Student ID</th>
-            <th>Student Name</th>
-            <?php foreach (array_keys($dates) as $date): ?>
-                <th><?= htmlspecialchars($date) ?></th>
-            <?php endforeach; ?>
-        </tr>
-    <?php
-
-        $CourseID = $_POST['filter_course_id'];
-        $Enrolled_students = $objenrollmentController->getEnrollmentbyCourseID($CourseID);
-
-
-        foreach ($Enrolled_students as $student): ?>
-            <tr>
-                <td><?= htmlspecialchars($student['student_id']) ?></td>
-                <td><?= htmlspecialchars($student['student_name']) ?></td>
-                <?php foreach (array_keys($dates) as $date): ?>
-                    <td>
-                        <?php
-                            if (isset($attendanceMap[$student['student_id']][$date])) {
-                                echo htmlspecialchars($attendanceMap[$student['student_id']][$date]);
-                            } 
-                            else {
-                                echo '-';
-                            }
-                        ?>
-                    </td>
-
-                <?php endforeach; ?>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-
-        <?php endif; ?>
-    <?php endif; ?>
-
+    <!-- Operation and Course Selection Form -->
     <form method="POST">
-        <label for="course_id">Select a Course:</label>
-        <select name="course_id" id="course_id" required>
+        <label for="operation">Select Operation:</label>
+        <select name="operation" id="operation" required>
+            <option value="">-- Choose Operation --</option>
+            <option value="show_attendance" <?= ($operation === 'show_attendance') ? 'selected' : '' ?>>Show Attendance</option>
+            <option value="mark_attendance" <?= ($operation === 'mark_attendance') ? 'selected' : '' ?>>Mark Attendance</option>
+        </select>
+
+        <label for="filter_course_id" style="margin-left: 20px;">Select Course:</label>
+        <select name="filter_course_id" id="filter_course_id" required>
             <option value="">-- Choose a Course --</option>
             <?php foreach ($teacherCourses as $course): ?>
-                <option value="<?= htmlspecialchars($course['C_id']) ?>"
-                    <?= ($selectedCourseId == $course['C_id']) ? 'selected' : '' ?>>
+                <option value="<?= htmlspecialchars($course['C_id']) ?>" <?= ($selectedCourseId == $course['C_id']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($course['course_name']) ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <br><br>
-        <button name="View-Enrolled-Students" type="submit">Mark Attendance</button>
+
+        <button type="submit" name="operation_submit">Proceed</button>
     </form>
 
-    <?php if (!empty($Enrolled_students)) : ?>
+    <!-- Show Attendance Records -->
+    <?php if ($operation === 'show_attendance' && !empty($filteredAttendance)): ?>
+        <h3>Attendance Records</h3>
+        <?php
+        // Extract unique dates
+        $dates = [];
+        foreach ($filteredAttendance as $record) {
+            $dates[$record['date']] = true;
+        }
+        ksort($dates); // sort by date
+
+        // Map student_id => [date => status]
+        $attendanceMap = [];
+        foreach ($filteredAttendance as $entry) {
+            $sid = $entry['student_id'];
+            $d = $entry['date'];
+            $attendanceMap[$sid][$d] = $entry['status'];
+        }
+        ?>
+        <table>
+            <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <?php foreach (array_keys($dates) as $d): ?>
+                    <th><?= htmlspecialchars($d) ?></th>
+                <?php endforeach; ?>
+            </tr>
+            <?php foreach ($Enrolled_students as $student): ?>
+                <tr>
+                    <td><?= htmlspecialchars($student['student_id']) ?></td>
+                    <td><?= htmlspecialchars($student['student_name']) ?></td>
+                    <?php foreach (array_keys($dates) as $d): ?>
+                        <td><?= htmlspecialchars($attendanceMap[$student['student_id']][$d] ?? '-') ?></td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+
+    <!-- Mark Attendance Form -->
+    <?php if ($operation === 'mark_attendance' && !empty($Enrolled_students)): ?>
         <h3>Mark Attendance for Course: <?= htmlspecialchars($selectedCourseId) ?> (<?= $date ?>)</h3>
         <form method="POST">
             <input type="hidden" name="course_id" value="<?= htmlspecialchars($selectedCourseId) ?>">
@@ -207,10 +228,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["View-Enrolled-Student
             <br>
             <button type="submit" name="submit_attendance" class="mark-button">Submit Attendance</button>
         </form>
-    <?php elseif (isset($selectedCourseId)) : ?>
-        <p>No students enrolled in the selected course.</p>
     <?php endif; ?>
-
 </div>
+
 </body>
 </html>

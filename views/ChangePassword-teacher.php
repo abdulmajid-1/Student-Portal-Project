@@ -10,7 +10,7 @@ if (!isset($_SESSION["user_id"])) {
 $objDatabaseConnection = new DatabaseConnectivity();
 $objDatabaseConnection = $objDatabaseConnection->getConnection();
 
-class StudentPasswordController {
+class TeacherPasswordController {
     private $connection;
 
     public function __construct($connection) {
@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($oldPassword) || empty($newPassword)) {
         $message = "Please fill in all fields.";
-    } else {
+    } 
+    else {
         $controller = new StudentPasswordController($objDatabaseConnection);
         $message = $controller->changePassword($_SESSION["user_id"], $oldPassword, $newPassword);
     }
@@ -142,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="header-bar">
     <div><strong>Change Password</strong></div>
     <div>
-        <a href="dashboard.php">⬅ Dashboard</a>
+        <a href="teacher-dashboard.php">⬅ Dashboard</a>
         <a href="logout.php">🚪 Logout</a>
     </div>
 </div>

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../config/db.php';
+include_once '../controllers/userController.php';
 
 $errorMsg = '';
 $email = '';
@@ -84,14 +85,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 20px;
             color: #333;
         }
-        .login-box input[type="email"],
-        .login-box input[type="password"] {
+        .login-box input,
+        .login-box select {
             width: 100%;
             padding: 12px 15px;
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 14px;
+            box-sizing: border-box;
         }
         .login-box button {
             width: 100%;
@@ -122,18 +124,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 6px;
             font-size: 14px;
         }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px;
+            box-sizing: border-box;
+        }
+        .toggle-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
+            color: #888;
+        }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h2>Login to Student Portal</h2>
-        <?php if (!empty($errorMsg)) { echo "<div class='error'>" . htmlspecialchars($errorMsg) . "</div>"; } ?>
-        <form method="post">
-            <input type="email" name="email" required placeholder="Email" value="<?php echo htmlspecialchars($email); ?>">
-            <input type="password" name="password" required placeholder="Password">
-            <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="register.php">Register</a></p>
-    </div>
+<div class="login-box">
+    <h2>Login to Student Portal</h2>
+    <?php if (!empty($errorMsg)) {
+        echo "<div class='error'>" . htmlspecialchars($errorMsg) . "</div>";
+    } ?>
+    <form method="post">
+        <input type="email" name="email" required placeholder="Email" value="<?php echo htmlspecialchars($email); ?>">
+
+        <div class="password-wrapper">
+            <input type="password" name="password" id="password" required placeholder="Password">
+            <span class="toggle-eye" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="register.php">Register</a></p>
+</div>
+
+<script>
+    function togglePassword() {
+        const field = document.getElementById("password");
+        field.type = field.type === "password" ? "text" : "password";
+    }
+</script>
 </body>
 </html>

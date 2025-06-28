@@ -24,6 +24,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== 'teacher') {
             <a href="#">Account ▾</a>
             <div class="account-dropdown">
                 <a href="#">Welcome, <?= htmlspecialchars($_SESSION["name"]) ?></a>
+                <a href="ChangePassword-teacher.php">Change Password</a>
                 <a href="logout.php">Logout</a>
             </div>
         </li>

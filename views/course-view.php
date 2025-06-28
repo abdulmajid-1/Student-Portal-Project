@@ -23,7 +23,6 @@ if (isset($_POST["action"])) {
         case 'add':
             $objCourseModel = new Course();
             $objCourseModel->setCourseCode($_POST["code"]);
-            $objCourseModel->setCourseId($_POST["id"]);
             $objCourseModel->setCourseDepartment($_POST["department"]);
             $objCourseModel->setCourseName($_POST["name"]);
             $objCourseModel->setTeacherId($_POST["teacher_id"]);
@@ -51,6 +50,24 @@ if (isset($_POST["action"])) {
     <meta charset="UTF-8">
     <title>Course Management</title>
     <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        .header-bar {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .header-bar a:hover {
+            text-decoration: underline;
+        }
+    </style>
     <script>
         function toggleFields() {
             const action = document.getElementById("action").value;
@@ -60,6 +77,16 @@ if (isset($_POST["action"])) {
     </script>
 </head>
 <body>
+
+<!-- Header -->
+<div class="header-bar">
+    <div><strong>Course Management Panel</strong></div>
+    <div>
+        <a href="admin-dashboard.php">⬅ Back to Dashboard</a>
+        <a href="logout.php">🚪 Logout</a>
+    </div>
+</div>
+
 <div class="main">
     <h2>Course Management</h2>
 
@@ -74,9 +101,6 @@ if (isset($_POST["action"])) {
 
         <!-- Add Course Fields -->
         <div id="addFields" style="display:none;">
-            <!-- <label>Course ID:</label><br>
-            <input type="number" name="id"><br> -->
-
             <label>Code:</label><br>
             <input type="text" name="code"><br>
 

@@ -7,6 +7,10 @@ if (!isset($_SESSION["user_id"])) {
 include_once '../config/db.php';
 include_once '../controllers/studentController.php';
 
+if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== 'user') {
+    header("Location: login.php");
+    exit;
+}
 $objdatabaseconnection = new DatabaseConnectivity();
 $connection = $objdatabaseconnection->getConnection();
 $objStudentController = new StudentController($connection);
