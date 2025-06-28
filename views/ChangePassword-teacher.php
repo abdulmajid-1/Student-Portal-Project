@@ -10,14 +10,17 @@ if (!isset($_SESSION["user_id"])) {
 $objDatabaseConnection = new DatabaseConnectivity();
 $objDatabaseConnection = $objDatabaseConnection->getConnection();
 
-class TeacherPasswordController {
+class TeacherPasswordController
+{
     private $connection;
 
-    public function __construct($connection) {
+    public function __construct($connection)
+    {
         $this->connection = $connection;
     }
 
-    public function changePassword($userId, $oldPassword, $newPassword) {
+    public function changePassword($userId, $oldPassword, $newPassword)
+    {
         $query = "SELECT password FROM Users WHERE U_id = :user_id";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -50,8 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($oldPassword) || empty($newPassword)) {
         $message = "Please fill in all fields.";
-    } 
-    else {
+    } else {
         $controller = new StudentPasswordController($objDatabaseConnection);
         $message = $controller->changePassword($_SESSION["user_id"], $oldPassword, $newPassword);
     }
@@ -60,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Change Password</title>
@@ -72,24 +75,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .header-bar {
-            background-color: #007BFF;
+            background: linear-gradient(90deg, #004080 60%, #0074d9 100%);
             color: white;
-            padding: 15px 30px;
+            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .header-bar .brand {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         .header-bar a {
             color: white;
             text-decoration: none;
-            margin-left: 20px;
-            font-size: 14px;
+            font-size: 16px;
+            margin-left: 25px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
 
         .header-bar a:hover {
-            text-decoration: underline;
+            background-color: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
         }
 
         .main {
@@ -98,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 30px 40px;
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         form {
@@ -137,28 +155,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
+
 <body>
 
-<!-- Header Bar -->
-<div class="header-bar">
-    <div><strong>Change Password</strong></div>
-    <div>
-        <a href="teacher-dashboard.php">⬅ Dashboard</a>
-        <a href="logout.php">🚪 Logout</a>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div><strong>Change Password</strong></div>
+        <div>
+            <a href="teacher-dashboard.php">Dashboard</a>
+            <a href="logout.php">Logout</a>
+        </div>
     </div>
-</div>
 
-<!-- Main Section -->
-<div class="main">
-    <form method="POST">
-        <input type="password" name="oldPassword" required placeholder="Current Password">
-        <input type="password" name="newPassword" required placeholder="New Password">
-        <button type="submit">Change Password</button>
-        <?php if ($message): ?>
-            <div class="message"><?= htmlspecialchars($message) ?></div>
-        <?php endif; ?>
-    </form>
-</div>
+    <!-- Main Section -->
+    <div class="main">
+        <form method="POST">
+            <input type="password" name="oldPassword" required placeholder="Current Password">
+            <input type="password" name="newPassword" required placeholder="New Password">
+            <button type="submit">Change Password</button>
+            <?php if ($message): ?>
+                <div class="message"><?= htmlspecialchars($message) ?></div>
+            <?php endif; ?>
+        </form>
+    </div>
 
 </body>
+
 </html>

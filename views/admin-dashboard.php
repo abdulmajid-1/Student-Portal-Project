@@ -7,11 +7,13 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== 'admin') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../assets/style.css">
 </head>
+
 <body>
     <style>
         body {
@@ -86,33 +88,35 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== 'admin') {
             padding: 20px;
         }
     </style>
-</head>
-<body>
+    </head>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="brand">Admin Portal</div>
-    <ul>
-        <li><a href="student-view.php">Students</a></li>
-        <li><a href="course-view.php">Courses</a></li>
-        <li><a href="enrollment-view.php">Enrollments</a></li>
-        <li><a href="teacher-view.php">Teachers</a></li>
-        <li class="account-menu">
-            <a href="#">Account ▾</a>
-            <div class="account-dropdown">
-                <a href="#">Welcome, <?= htmlspecialchars($_SESSION["name"]) ?></a>
-                <a href="adminController.php">Change Password</a>
-                <a href="logout.php">Logout</a>
-            </div>
-        </li>
-    </ul>
-</nav>
-<div class="main">
-    <h2>Welcome, <?= htmlspecialchars($_SESSION["name"]) ?>!</h2>
-    <p>This is your admin dashboard.</p>
-    <!-- ...existing dashboard content... -->
-</div>
+    <body>
+
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="brand">Admin Portal</div>
+            <ul>
+                <li><a href="student-view.php">Students</a></li>
+                <li><a href="course-view.php">Courses</a></li>
+                <li><a href="enrollment-view.php">Enrollments</a></li>
+                <li><a href="teacher-view.php">Teachers</a></li>
+                <li class="account-menu">
+                    <a href="#">Account ▾</a>
+                    <div class="account-dropdown">
+                        <a href="#">Welcome, <?= htmlspecialchars($_SESSION["name"]) ?></a>
+                        <a href="adminController.php">Change Password</a>
+                        <a href="logout.php">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="main">
+            <h2>Welcome, <?= htmlspecialchars($_SESSION["name"]) ?>!</h2>
+            <p>This is your admin dashboard.</p>
+            <!-- ...existing dashboard content... -->
+        </div>
 
 
-</body>
+    </body>
+
 </html>

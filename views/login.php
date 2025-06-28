@@ -32,7 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION["name"] = $user["name"];
                     $_SESSION["role"] = $user["role"];
 
-                    if (isset($stmt)) { $stmt->closeCursor(); }
+                    if (isset($stmt)) {
+                        $stmt->closeCursor();
+                    }
                     if ($user["role"] == "admin") {
                         header("Location: admin-dashboard.php");
                     } elseif ($user["role"] == "teacher") {
@@ -47,7 +49,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $errorMsg = "User not found.";
             }
-            if (isset($stmt)) { $stmt->closeCursor(); }
+            if (isset($stmt)) {
+                $stmt->closeCursor();
+            }
         } catch (PDOException $e) {
             $errorMsg = "Database error: " . $e->getMessage();
         } catch (Exception $e) {
@@ -61,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login | Student Portal</title>
@@ -73,18 +78,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
             height: 100vh;
         }
+
         .login-box {
             background: #fff;
             padding: 30px 40px;
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             width: 350px;
             text-align: center;
         }
+
         .login-box h2 {
             margin-bottom: 20px;
             color: #333;
         }
+
         .login-box input,
         .login-box select {
             width: 100%;
@@ -95,6 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 14px;
             box-sizing: border-box;
         }
+
         .login-box button {
             width: 100%;
             padding: 12px;
@@ -105,17 +114,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 16px;
             cursor: pointer;
         }
+
         .login-box button:hover {
             background: #0056b3;
         }
+
         .login-box p {
             margin-top: 15px;
             font-size: 14px;
         }
+
         .login-box a {
             color: #007BFF;
             text-decoration: none;
         }
+
         .error {
             background-color: #ffe0e0;
             color: #cc0000;
@@ -124,15 +137,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 6px;
             font-size: 14px;
         }
+
         .password-wrapper {
             position: relative;
             width: 100%;
         }
+
         .password-wrapper input {
             width: 100%;
             padding-right: 40px;
             box-sizing: border-box;
         }
+
         .toggle-eye {
             position: absolute;
             right: 12px;
@@ -144,30 +160,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     </style>
 </head>
+
 <body>
-<div class="login-box">
-    <h2>Login to Student Portal</h2>
-    <?php if (!empty($errorMsg)) {
-        echo "<div class='error'>" . htmlspecialchars($errorMsg) . "</div>";
-    } ?>
-    <form method="post">
-        <input type="email" name="email" required placeholder="Email" value="<?php echo htmlspecialchars($email); ?>">
+    <div class="login-box">
+        <h2>Login</h2>
+        <?php if (!empty($errorMsg)) {
+            echo "<div class='error'>" . htmlspecialchars($errorMsg) . "</div>";
+        } ?>
+        <form method="post">
+            <input type="email" name="email" required placeholder="Email" value="<?php echo htmlspecialchars($email); ?>">
 
-        <div class="password-wrapper">
-            <input type="password" name="password" id="password" required placeholder="Password">
-            <span class="toggle-eye" onclick="togglePassword()">👁️</span>
-        </div>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" required placeholder="Password">
+                <span class="toggle-eye" onclick="togglePassword()">👁️</span>
+            </div>
 
-        <button type="submit">Login</button>
-    </form>
-    <p>Don't have an account? <a href="register.php">Register</a></p>
-</div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="register.php">Register</a></p>
+    </div>
 
-<script>
-    function togglePassword() {
-        const field = document.getElementById("password");
-        field.type = field.type === "password" ? "text" : "password";
-    }
-</script>
+    <script>
+        function togglePassword() {
+            const field = document.getElementById("password");
+            field.type = field.type === "password" ? "text" : "password";
+        }
+    </script>
 </body>
+
 </html>

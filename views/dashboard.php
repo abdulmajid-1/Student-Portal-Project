@@ -27,17 +27,18 @@ $objStudentController = new StudentController($connection);
 // ];
 
 $student_info = $objStudentController->GetStudentDataDashboard($_SESSION["user_id"]);
-if(!$student_info){
-     $student_info = [
+if (!$student_info) {
+    $student_info = [
         'roll_no' => 'N/A',
         'department' => 'N/A',
         'year' => 'N/A'
-     ];
+    ];
 }
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Student Dashboard</title>
@@ -122,7 +123,7 @@ if(!$student_info){
         .dashboard-card {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 20px;
         }
@@ -147,7 +148,8 @@ if(!$student_info){
             margin-bottom: 5px;
         }
 
-        .form-group input, .form-group select {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
@@ -188,51 +190,53 @@ if(!$student_info){
         }
     </style>
 </head>
+
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="brand">Student Portal</div>
-    <ul>
-        <li><a href="studentCourseView.php">My Courses</a></li>
-        <li><a href="Student-attendance-view.php">Attendance</a></li>
-        <li><a href="academic-Calendar.html">Academic Calendar</a></li>
-        <li class="account-menu">
-            <a href="#">Account ▾</a>
-            <div class="account-dropdown">
-                <a href="#">Welcome, <?= htmlspecialchars($_SESSION["name"]) ?></a>
-                <a href="ChangePassword-Student.php">Change Password</a>
-                <a href="logout.php">Logout</a>
-            </div>
-        </li>
-    </ul>
-</nav>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="brand">Student Portal</div>
+        <ul>
+            <li><a href="studentCourseView.php">My Courses</a></li>
+            <li><a href="Student-attendance-view.php">Attendance</a></li>
+            <li><a href="academic-Calendar.php">Academic Calendar</a></li>
+            <li class="account-menu">
+                <a href="#">Account ▾</a>
+                <div class="account-dropdown">
+                    <a href="#">Welcome, <?= htmlspecialchars($_SESSION["name"]) ?></a>
+                    <a href="ChangePassword-Student.php">Change Password</a>
+                    <a href="logout.php">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
 
-<!-- MAIN CONTENT -->
-<div class="main">
-    <div class="dashboard-card student-info-form">
-        <h2>Student Information</h2>
-        <form class="info-grid">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" value="<?= htmlspecialchars($_SESSION["name"]) ?>" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label for="rollno">Roll Number</label>
-                <input type="text" id="rollno" value="<?= htmlspecialchars($student_info['roll_no']) ?>" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label for="department">Department</label>
-                <input type="text" id="department" value="<?= htmlspecialchars($student_info['department']) ?>" readonly>
-            </div>
-            
-        </form>
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <div class="dashboard-card student-info-form">
+            <h2>Student Information</h2>
+            <form class="info-grid">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" value="<?= htmlspecialchars($_SESSION["name"]) ?>" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="rollno">Roll Number</label>
+                    <input type="text" id="rollno" value="<?= htmlspecialchars($student_info['roll_no']) ?>" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" value="<?= htmlspecialchars($student_info['department']) ?>" readonly>
+                </div>
+
+            </form>
+        </div>
+
+
     </div>
 
-
-</div>
-
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 <?php
 include_once '../config/db.php';
-include_once '../controllers/enrollmentController.php'; 
+include_once '../controllers/enrollmentController.php';
 include_once '../controllers/courseController.php';
 include_once '../controllers/studentController.php';
 
@@ -54,26 +54,46 @@ if ($selectedAction) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Enrollment Management</title>
     <link rel="stylesheet" href="../assets/style.css">
     <style>
         .header-bar {
-            background-color: #007BFF;
+            background: linear-gradient(90deg, #004080 60%, #0074d9 100%);
             color: white;
-            padding: 15px 30px;
+            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+            margin: 0;
         }
+
+        .header-bar .brand {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
         .header-bar a {
             color: white;
             text-decoration: none;
-            margin-left: 15px;
+            font-size: 16px;
+            margin-left: 25px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
+
         .header-bar a:hover {
-            text-decoration: underline;
+            background-color: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
         }
     </style>
     <script>
@@ -85,7 +105,7 @@ if ($selectedAction) {
             document.getElementById("viewAllForm").style.display = selected === "view_all" ? "block" : "none";
         }
 
-        window.onload = function () {
+        window.onload = function() {
             const selectedAction = "<?= $selectedAction ?>";
             if (selectedAction !== "") {
                 document.getElementById("actionSelector").value = selectedAction;
@@ -94,125 +114,127 @@ if ($selectedAction) {
         };
     </script>
 </head>
+
 <body>
 
-<!-- Header -->
-<div class="header-bar">
-    <div><strong>Enrollment Management Panel</strong></div>
-    <div>
-        <a href="admin-dashboard.php">⬅ Back to Dashboard</a>
-        <a href="logout.php">🚪 Logout</a>
-    </div>
-</div>
-
-<!-- Main Content -->
-<div class="main" style="padding: 20px; max-width: 900px; margin: auto;">
-    <h2>Enrollment Management</h2>
-
-    <!-- Dropdown Menu -->
-    <label for="actionSelector"><strong>Select an action:</strong></label>
-    <select id="actionSelector" onchange="showForm()">
-        <option value="">-- Select Action --</option>
-        <option value="enroll">Enroll Student</option>
-        <option value="delete">Delete Enrollment</option>
-        <option value="view">View Enrollments by Student</option>
-        <option value="view_all">View All Enrollments</option>
-    </select>
-
-    <hr>
-
-    <!-- Enroll Student Form -->
-    <div id="enrollForm" style="display:none;">
-        <h3>Enroll a Student</h3>
-        <form method="post">
-            <input type="hidden" name="action" value="enroll">
-
-            <label>Select Student:</label><br>
-            <select name="student_id" required>
-                <option value="">-- Select Student --</option>
-                <?php foreach ($studentList as $student): ?>
-                    <option value="<?= $student['S_id'] ?>">
-                        <?= htmlspecialchars($student['student_name']) ?> (ID: <?= $student['S_id'] ?>)
-                    </option>
-                <?php endforeach; ?>
-            </select><br><br>
-
-            <label>Select Course:</label><br>
-            <select name="course_id" required>
-                <option value="">-- Select Course --</option>
-                <?php foreach ($courseList as $course): ?>
-                    <option value="<?= $course['C_id'] ?>">
-                        <?= htmlspecialchars($course['name']) ?> (ID: <?= $course['C_id'] ?>)
-                    </option>
-                <?php endforeach; ?>
-            </select><br><br>
-
-            <input type="submit" value="Enroll Student">
-        </form>
+    <!-- Header -->
+    <div class="header-bar">
+        <div><strong>Enrollment Management Panel</strong></div>
+        <div>
+            <a href="admin-dashboard.php">Dashboard</a>
+            <a href="logout.php">Logout</a>
+        </div>
     </div>
 
-    <!-- Delete Enrollment Form -->
-    <div id="deleteForm" style="display:none;">
-        <h3>Delete an Enrollment</h3>
-        <form method="post">
-            <input type="hidden" name="action" value="delete">
-            <label>Enrollment ID:</label>
-            <input type="number" name="enrollment_id" required><br><br>
-            <input type="submit" value="Delete Enrollment">
-        </form>
-    </div>
+    <!-- Main Content -->
+    <div class="main" style="padding: 20px; max-width: 900px; margin: auto;">
+        <h2>Enrollment Management</h2>
 
-    <!-- View Enrollments by Student -->
-    <div id="viewForm" style="display:none;">
-        <h3>View Enrollments by Student</h3>
-        <form method="post">
-            <input type="hidden" name="action" value="view">
-            <label>Select Student:</label><br>
-            <select name="student_id" required>
-                <option value="">-- Select Student --</option>
-                <?php foreach ($studentList as $student): ?>
-                    <option value="<?= $student['S_id'] ?>">
-                        <?= htmlspecialchars($student['student_name']) ?> (ID: <?= $student['S_id'] ?>)
-                    </option>
-                <?php endforeach; ?>
-            </select><br><br>
-            <input type="submit" value="View Enrollments">
-        </form>
-    </div>
+        <!-- Dropdown Menu -->
+        <label for="actionSelector"><strong>Select an action:</strong></label>
+        <select id="actionSelector" onchange="showForm()">
+            <option value="">-- Select Action --</option>
+            <option value="enroll">Enroll Student</option>
+            <option value="delete">Delete Enrollment</option>
+            <option value="view">View Enrollments by Student</option>
+            <option value="view_all">View All Enrollments</option>
+        </select>
 
-    <!-- View All Enrollments -->
-    <div id="viewAllForm" style="display:none;">
-        <h3>View All Enrollments</h3>
-        <form method="post">
-            <input type="hidden" name="action" value="view_all">
-            <input type="submit" value="View All Enrollments">
-        </form>
-    </div>
+        <hr>
 
-    <hr>
+        <!-- Enroll Student Form -->
+        <div id="enrollForm" style="display:none;">
+            <h3>Enroll a Student</h3>
+            <form method="post">
+                <input type="hidden" name="action" value="enroll">
 
-    <!-- Display Enrollments Table -->
-    <?php if (!empty($enrollmentList)): ?>
-        <h3>Enrollment Records</h3>
-        <table border="1" cellpadding="5">
-            <tr>
-                <th>Enrollment ID</th>
-                <th>Student ID</th>
-                <th>Student Name</th>
-                <th>Course ID</th>
-                <th>Course Name</th>
-            </tr>
-            <?php foreach ($enrollmentList as $enrollment): ?>
+                <label>Select Student:</label><br>
+                <select name="student_id" required>
+                    <option value="">-- Select Student --</option>
+                    <?php foreach ($studentList as $student): ?>
+                        <option value="<?= $student['S_id'] ?>">
+                            <?= htmlspecialchars($student['student_name']) ?> (ID: <?= $student['S_id'] ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select><br><br>
+
+                <label>Select Course:</label><br>
+                <select name="course_id" required>
+                    <option value="">-- Select Course --</option>
+                    <?php foreach ($courseList as $course): ?>
+                        <option value="<?= $course['C_id'] ?>">
+                            <?= htmlspecialchars($course['name']) ?> (ID: <?= $course['C_id'] ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select><br><br>
+
+                <input type="submit" value="Enroll Student">
+            </form>
+        </div>
+
+        <!-- Delete Enrollment Form -->
+        <div id="deleteForm" style="display:none;">
+            <h3>Delete an Enrollment</h3>
+            <form method="post">
+                <input type="hidden" name="action" value="delete">
+                <label>Enrollment ID:</label>
+                <input type="number" name="enrollment_id" required><br><br>
+                <input type="submit" value="Delete Enrollment">
+            </form>
+        </div>
+
+        <!-- View Enrollments by Student -->
+        <div id="viewForm" style="display:none;">
+            <h3>View Enrollments by Student</h3>
+            <form method="post">
+                <input type="hidden" name="action" value="view">
+                <label>Select Student:</label><br>
+                <select name="student_id" required>
+                    <option value="">-- Select Student --</option>
+                    <?php foreach ($studentList as $student): ?>
+                        <option value="<?= $student['S_id'] ?>">
+                            <?= htmlspecialchars($student['student_name']) ?> (ID: <?= $student['S_id'] ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select><br><br>
+                <input type="submit" value="View Enrollments">
+            </form>
+        </div>
+
+        <!-- View All Enrollments -->
+        <div id="viewAllForm" style="display:none;">
+            <h3>View All Enrollments</h3>
+            <form method="post">
+                <input type="hidden" name="action" value="view_all">
+                <input type="submit" value="View All Enrollments">
+            </form>
+        </div>
+
+        <hr>
+
+        <!-- Display Enrollments Table -->
+        <?php if (!empty($enrollmentList)): ?>
+            <h3>Enrollment Records</h3>
+            <table border="1" cellpadding="5">
                 <tr>
-                    <td><?= htmlspecialchars($enrollment['enrollment_id']) ?></td>
-                    <td><?= htmlspecialchars($enrollment['student_id']) ?></td>
-                    <td><?= htmlspecialchars($enrollment['student_name']) ?></td>
-                    <td><?= htmlspecialchars($enrollment['course_id']) ?></td>
-                    <td><?= htmlspecialchars($enrollment['course_name']) ?></td>
+                    <th>Enrollment ID</th>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
                 </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php endif; ?>
-</div>
+                <?php foreach ($enrollmentList as $enrollment): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($enrollment['enrollment_id']) ?></td>
+                        <td><?= htmlspecialchars($enrollment['student_id']) ?></td>
+                        <td><?= htmlspecialchars($enrollment['student_name']) ?></td>
+                        <td><?= htmlspecialchars($enrollment['course_id']) ?></td>
+                        <td><?= htmlspecialchars($enrollment['course_name']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php endif; ?>
+    </div>
 </body>
+
 </html>

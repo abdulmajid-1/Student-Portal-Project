@@ -56,135 +56,158 @@ $userList = $objUserController->getAllUsersNames(); // Must return id and name
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Student Management</title>
     <link rel="stylesheet" href="../assets/style.css">
     <style>
         .header-bar {
-            background-color: #007BFF;
+            background: linear-gradient(90deg, #004080 60%, #0074d9 100%);
             color: white;
-            padding: 15px 30px;
+            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0.5px;
+            margin: 0;
         }
+
+        .header-bar .brand {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
         .header-bar a {
             color: white;
             text-decoration: none;
-            margin-left: 15px;
+            font-size: 16px;
+            margin-left: 25px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
+
         .header-bar a:hover {
-            text-decoration: underline;
+            background-color: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
         }
     </style>
 </head>
+
 <body>
-<!-- Header Bar -->
-<div class="header-bar">
-    <div><strong>Student Management Panel</strong></div>
-    <div>
-        <a href="admin-dashboard.php">⬅ Back to Dashboard</a>
-        <a href="logout.php">🚪 Logout</a>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div><strong>Student Management Panel</strong></div>
+        <div>
+            <a href="admin-dashboard.php">Dashboard</a>
+            <a href="logout.php">Logout</a>
+        </div>
     </div>
-</div>
 
-<div class="main">
-    <h2>Student Management</h2>
+    <div class="main">
+        <h2>Student Management</h2>
 
-    <?php if (!empty($message)) echo "<p><strong>$message</strong></p>"; ?>
+        <?php if (!empty($message)) echo "<p><strong>$message</strong></p>"; ?>
 
-    <!-- Operation Selector -->
-    <form method="post">
-        <label>Select Operation:</label>
-        <select name="action" onchange="toggleForms(this.value)" required>
-            <option value="">--Choose Action--</option>
-            <option value="insert">Insert Student</option>
-            <option value="delete">Delete Student</option>
-            <option value="get_by_id">View Student By ID</option>
-            <option value="get_all">View All Students</option>
-        </select><br><br>
-
-        <!-- Insert Student Form -->
-        <div id="insert_form" style="display:none;">
-            <label>Student ID:</label>
-            <input type="number" name="S_id"><br><br>
-
-            <label>Select User:</label>
-            <select name="user_id">
-                <?php foreach ($userList as $user): ?>
-                    <option value="<?= $user['U_id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
-                <?php endforeach; ?>
+        <!-- Operation Selector -->
+        <form method="post">
+            <label>Select Operation:</label>
+            <select name="action" onchange="toggleForms(this.value)" required>
+                <option value="">--Choose Action--</option>
+                <option value="insert">Insert Student</option>
+                <option value="delete">Delete Student</option>
+                <option value="get_by_id">View Student By ID</option>
+                <option value="get_all">View All Students</option>
             </select><br><br>
 
-            <label>Roll No:</label>
-            <input type="text" name="roll_no"><br><br>
+            <!-- Insert Student Form -->
+            <div id="insert_form" style="display:none;">
+                <label>Student ID:</label>
+                <input type="number" name="S_id"><br><br>
 
-            <label>Department:</label>
-            <input type="text" name="department"><br><br>
+                <label>Select User:</label>
+                <select name="user_id">
+                    <?php foreach ($userList as $user): ?>
+                        <option value="<?= $user['U_id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
+                    <?php endforeach; ?>
+                </select><br><br>
 
-            <label>Year:</label>
-            <input type="text" name="year"><br><br>
-        </div>
+                <label>Roll No:</label>
+                <input type="text" name="roll_no"><br><br>
 
-        <!-- Delete Form -->
-        <div id="delete_form" style="display:none;">
-            <label>Enter Student ID to Delete:</label>
-            <input type="number" name="delete_id"><br><br>
-        </div>
+                <label>Department:</label>
+                <input type="text" name="department"><br><br>
 
-        <!-- View by ID Form -->
-        <div id="get_by_id_form" style="display:none;">
-            <label>Enter Student ID to View:</label>
-            <input type="number" name="view_id"><br><br>
-        </div>
+                <label>Year:</label>
+                <input type="text" name="year"><br><br>
+            </div>
 
-        <!-- Submit -->
-        <button type="submit">Submit</button>
-    </form>
+            <!-- Delete Form -->
+            <div id="delete_form" style="display:none;">
+                <label>Enter Student ID to Delete:</label>
+                <input type="number" name="delete_id"><br><br>
+            </div>
 
-    <!-- Display Result -->
-    <?php if (!empty($studentData)): ?>
-        <hr>
-        <h3>Student Record(s)</h3>
-        <table border="1" cellpadding="5">
-            <tr>
-                <th>S_ID</th>
-                <th>User_ID</th>
-                <th>Student Name</th>
-                <th>Roll No</th>
-                <th>Department</th>
-                <th>Year</th>
-            </tr>
-            <?php if (isset($studentData['S_id'])): ?>
+            <!-- View by ID Form -->
+            <div id="get_by_id_form" style="display:none;">
+                <label>Enter Student ID to View:</label>
+                <input type="number" name="view_id"><br><br>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Display Result -->
+        <?php if (!empty($studentData)): ?>
+            <hr>
+            <h3>Student Record(s)</h3>
+            <table border="1" cellpadding="5">
                 <tr>
-                    <td><?= htmlspecialchars($studentData['S_id']) ?></td>
-                    <td><?= htmlspecialchars($studentData['user_id']) ?></td>
-                    <td><?= htmlspecialchars($studentData['Student_name']) ?></td>
-                    <td><?= htmlspecialchars($studentData['roll_no']) ?></td>
-                    <td><?= htmlspecialchars($studentData['department']) ?></td>
-                    <td><?= htmlspecialchars($studentData['year']) ?></td>
+                    <th>S_ID</th>
+                    <th>User_ID</th>
+                    <th>Student Name</th>
+                    <th>Roll No</th>
+                    <th>Department</th>
+                    <th>Year</th>
                 </tr>
-            <?php else: foreach ($studentData as $student): ?>
-                <tr>
-                    <td><?= htmlspecialchars($student['S_id']) ?></td>
-                    <td><?= htmlspecialchars($student['user_id']) ?></td>
-                    <td><?= htmlspecialchars($student['Student_name']) ?></td>
-                    <td><?= htmlspecialchars($student['roll_no']) ?></td>
-                    <td><?= htmlspecialchars($student['department']) ?></td>
-                    <td><?= htmlspecialchars($student['year']) ?></td>
-                </tr>
-            <?php endforeach; endif; ?>
-        </table>
-    <?php endif; ?>
-</div>
+                <?php if (isset($studentData['S_id'])): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($studentData['S_id']) ?></td>
+                        <td><?= htmlspecialchars($studentData['user_id']) ?></td>
+                        <td><?= htmlspecialchars($studentData['Student_name']) ?></td>
+                        <td><?= htmlspecialchars($studentData['roll_no']) ?></td>
+                        <td><?= htmlspecialchars($studentData['department']) ?></td>
+                        <td><?= htmlspecialchars($studentData['year']) ?></td>
+                    </tr>
+                    <?php else: foreach ($studentData as $student): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($student['S_id']) ?></td>
+                            <td><?= htmlspecialchars($student['user_id']) ?></td>
+                            <td><?= htmlspecialchars($student['Student_name']) ?></td>
+                            <td><?= htmlspecialchars($student['roll_no']) ?></td>
+                            <td><?= htmlspecialchars($student['department']) ?></td>
+                            <td><?= htmlspecialchars($student['year']) ?></td>
+                        </tr>
+                <?php endforeach;
+                endif; ?>
+            </table>
+        <?php endif; ?>
+    </div>
 
-<script>
-    function toggleForms(action) {
-        document.getElementById('insert_form').style.display = action === 'insert' ? 'block' : 'none';
-        document.getElementById('delete_form').style.display = action === 'delete' ? 'block' : 'none';
-        document.getElementById('get_by_id_form').style.display = action === 'get_by_id' ? 'block' : 'none';
-    }
-</script>
+    <script>
+        function toggleForms(action) {
+            document.getElementById('insert_form').style.display = action === 'insert' ? 'block' : 'none';
+            document.getElementById('delete_form').style.display = action === 'delete' ? 'block' : 'none';
+            document.getElementById('get_by_id_form').style.display = action === 'get_by_id' ? 'block' : 'none';
+        }
+    </script>
 </body>
+
 </html>

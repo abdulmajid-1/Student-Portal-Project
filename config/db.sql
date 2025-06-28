@@ -362,9 +362,8 @@ END //
 
 DELIMITER ;
 
-DELIMITER //
 
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE add_course(
     IN p_code VARCHAR(50),
@@ -376,7 +375,7 @@ CREATE PROCEDURE add_course(
 BEGIN
     INSERT INTO courses (code, C_id, department, name, teacher_id)
     VALUES (p_code, p_C_id, p_department, p_name, p_teacher_id);
-END $$
+END //
 
 DELIMITER ;
 
@@ -452,3 +451,4 @@ CREATE PROCEDURE GetUserByEmail(IN user_email VARCHAR(100))
 BEGIN
     SELECT * FROM users WHERE email = user_email;
 END //
+DELIMITER ;
