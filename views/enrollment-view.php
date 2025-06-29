@@ -31,13 +31,13 @@ if ($selectedAction) {
             $objEnrollmentModel->setCourseId($_POST["course_id"]);
 
             $isSuccess = $objEnrollmentController->enrollStudent($objEnrollmentModel);
-            echo $isSuccess ? "<p>✅ Student enrolled successfully!</p>" : "<p>❌ Error enrolling student.</p>";
+            echo $isSuccess ? "<p>Student enrolled successfully!</p>" : "<p>Error enrolling student.</p>";
             break;
 
         case 'delete':
             $enrollmentId = $_POST["enrollment_id"];
             $objEnrollmentController->deleteEnrollment($enrollmentId);
-            echo "<p>🗑️ Enrollment deleted (if existed).</p>";
+            echo "<p>Enrollment deleted (if existed).</p>";
             break;
 
         case 'view':

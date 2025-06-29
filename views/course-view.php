@@ -28,13 +28,13 @@ if (isset($_POST["action"])) {
             $objCourseModel->setTeacherId($_POST["teacher_id"]);
 
             $isSuccess = $objCourseController->InsertCourse($objCourseModel);
-            echo $isSuccess ? "✅ Course added successfully!" : "❌ Error adding course.";
+            echo $isSuccess ? "Course added successfully!" : "Error adding course.";
             break;
 
         case 'delete':
             $courseId = $_POST["id"];
             $objCourseController->DeleteCourse($courseId);
-            echo "🗑️ Course deleted (if existed).";
+            echo "Course deleted (if existed).";
             break;
 
         case 'view':

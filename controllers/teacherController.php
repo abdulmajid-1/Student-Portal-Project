@@ -1,20 +1,20 @@
 <?php
 include_once '../models/teacherModel.php'; // Include the Teacher model
-class TeacherController {
+class TeacherController
+{
 
     // Database connection
     private $connection;
 
-    public function __construct($connection) {
+    public function __construct($connection)
+    {
         $this->connection = $connection;
     }
 
     // Method to insert a new teacher
-    public function InsertTeacher(Teacher $objTeacher) {
-        // $id = $objTeacher->getTeacherID();
+    public function InsertTeacher(Teacher $objTeacher)
+    {
         $userId = $objTeacher->getUserID();
-        // $name = $objTeacher->getName();
-        // $email = $objTeacher->getEmail();
         $phoneNo = $objTeacher->getPhoneNo();
         $designation = $objTeacher->getDesignation();
         $hireDate = $objTeacher->getHireDate();
@@ -23,11 +23,10 @@ class TeacherController {
         $query = "SELECT role FROM Users WHERE U_id = ?";
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(1, $userId, PDO::PARAM_INT);
-        try{
+        try {
             $objStatement->execute();
             $userRole = $objStatement->fetchColumn();
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return 0; // Return 0 on failure
         }
@@ -36,7 +35,7 @@ class TeacherController {
             echo "Error: User with ID $userId is not a teacher.";
             return 0; // Return 0 on failure
         }
-    
+
 
         $objStatement = $this->connection->prepare("INSERT INTO Teachers (user_id, phone, designation, hire_date, salary) VALUES (?, ?, ?, ?, ?)");
         $objStatement->bindParam(1, $userId, PDO::PARAM_INT);
@@ -46,19 +45,19 @@ class TeacherController {
         $objStatement->bindParam(5, $salary);
 
 
-        try{
+        try {
             $objStatement->execute();
             echo "Teacher inserted successfully!";
             return;
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return 0; // Return 0 on failure
         }
     }
 
     // Method to delete a teacher by ID
-    public function DeleteTeacher($teacherId) {
+    public function DeleteTeacher($teacherId)
+    {
         try {
             $stmt = $this->connection->prepare("DELETE FROM Teachers WHERE T_id = ?");
             $stmt->bindParam(1, $teacherId, PDO::PARAM_INT);
@@ -66,13 +65,11 @@ class TeacherController {
             if ($stmt->rowCount() > 0) {
                 echo "Teacher deleted successfully!";
                 return;
-            } 
-            else {
+            } else {
                 echo "No teacher found with . ID: $teacherId";
                 return;
             }
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             echo "Teacher deletion error (ID $teacherId): " . $e->getMessage();
             return;
         }
@@ -80,7 +77,8 @@ class TeacherController {
 
 
     // Method to get all teachers
-    public function GetAllTeachers(): array {
+    public function GetAllTeachers(): array
+    {
         $query = "SELECT 
         	teachers.T_id,
             teachers.user_id,
@@ -102,7 +100,8 @@ class TeacherController {
     }
 
     // Method to get a teacher by ID
-    public function GetTeacherById($teacherId): array {
+    public function GetTeacherById($teacherId): array
+    {
         $query =  "SELECT 
             teachers.T_id,
             teachers.user_id,
@@ -126,35 +125,33 @@ class TeacherController {
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result: []; // Return empty array if no result found
+            return $result ? $result : []; // Return empty array if no result found
 
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetTeacherById Error: " . $e->getMessage());
             echo "Failed to retrieve teacher information.";
             return [];
         }
     }
-    public function GetTeacherCourses($UserId): array {
+    public function GetTeacherCourses($UserId): array
+    {
 
-        try{
+        try {
             $query = "SELECT T_id FROM teachers WHERE user_id = ?";
             $stmt = $this->connection->prepare($query);
             $stmt->bindParam(1, $UserId, PDO::PARAM_INT);
             $stmt->execute();
             $teacherId = $stmt->fetchColumn();
-
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetTeacherCourses Error: " . $e->getMessage());
             echo "Failed to retrieve teacher ID.";
             return [];
         }
 
-
-
-
-
+        if (!$teacherId) {
+            echo "No teacher found with user ID: $UserId";
+            return [];
+        }
         $query = "SELECT 
             c.C_id, 
             c.name AS course_name, 
@@ -178,15 +175,15 @@ class TeacherController {
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $result ? $result : []; // Return empty array if no result found
 
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetTeacherCourses Error: " . $e->getMessage());
             echo "Failed to retrieve teacher courses.";
             return [];
         }
     }
 
-    public function GetAttendanceRecords($userId): array {
+    public function GetAttendanceRecords($userId): array
+    {
 
 
         $query = "SELECT T_id FROM teachers WHERE user_id = ?";
@@ -227,24 +224,23 @@ class TeacherController {
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $result ? $result : []; // Return empty array if no result found
 
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetAttendanceRecords Error: " . $e->getMessage());
             echo "Failed to retrieve attendance records.";
             return [];
         }
-        
     }
 
-    public function GetAttendace($userID, $course_id): array{
+    public function GetAttendace($userID, $course_id): array
+    {
 
         $query = "SELECT T_id FROM teachers WHERE user_id = ?";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+        $stmt->bindParam(1, $userID, PDO::PARAM_INT);
         $stmt->execute();
         $teacherId = $stmt->fetchColumn();
         if (!$teacherId) {
-            echo "No teacher found with user ID: $userId";
+            echo "No teacher found with user ID: $userID";
             return [];
         }
 
@@ -270,13 +266,11 @@ class TeacherController {
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $result ? $result : []; // Return empty array if no result found
 
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetAttendace Error: " . $e->getMessage());
             echo "Failed to retrieve attendance records.";
             return [];
-        }   
-
+        }
     }
 
     public function markAttendance($studentId, $courseId, $teacherId, $date, $status)
@@ -292,34 +286,33 @@ class TeacherController {
             $stmt->bindParam(4, $date);
             $stmt->bindParam(5, $status);
             $stmt->execute();
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             // Log this instead of echo in production
             echo "Database Error: " . $e->getMessage();
         }
     }
 
-    
-    public function GetTeacherID($userID) : int {
+
+    public function GetTeacherID($userID): int
+    {
         $query = "SELECT T_id from teachers where user_id = ?";
-        try{
-            $stmt = $this -> connection -> prepare($query);
-            $stmt -> bindParam(1, $userID, PDO::PARAM_INT);
+        try {
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindParam(1, $userID, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt -> fetchColumn();
-        }
-        catch (PDOException $e)
-        {
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) {
             echo "Error : " . htmlspecialchars($e->getMessage());
             return 0;
         }
     }
 
-    public function GetAttendanceByCourse($teacherId, $courseId) : array {
+    public function GetAttendanceByCourse($teacherId, $courseId): array
+    {
 
         // echo "course id is ". $courseId . "teacehr id : ". $teacherId;
         // return [];
-        try{
+        try {
             $query = "SELECT 
                 a.A_id,
                 a.date,
@@ -332,50 +325,45 @@ class TeacherController {
               INNER JOIN users u ON s.user_id = u.U_id
               INNER JOIN courses c ON a.course_id = c.C_id
               WHERE a.teacher_id = ? AND c.C_id = ?";
-    
+
             $stmt = $this->connection->prepare($query);
-            $stmt -> bindParam(1, $teacherId, PDO::PARAM_INT);
-            $stmt -> bindParam(2, $courseId, PDO::PARAM_INT);
+            $stmt->bindParam(1, $teacherId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $courseId, PDO::PARAM_INT);
 
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-        catch (PDOException $e)
-        {
+        } catch (PDOException $e) {
             echo "Error: " . htmlspecialchars($e->getMessage());
             return [];
         }
-
     }
-    public function GetAllTeachersNames(): array {
+    public function GetAllTeachersNames(): array
+    {
         $query = "SELECT T.T_id, U.name
                   FROM teachers T
                   INNER JOIN users U ON T.user_id = U.U_id";
         $stmt = $this->connection->prepare($query);
         $stmt->execute();
         $teachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if($teachers)
-        {
+        if ($teachers) {
             return $teachers;
-        }
-        else
-        {
+        } else {
             return [];
         }
     }
-    public function GetAllTeachersIDAndNames() : array {
+    public function GetAllTeachersIDAndNames(): array
+    {
         $query = "SELECT U.U_id, U.name
-                  FROM users U
-                  WHERE U.role = 'teacher'";
+                    FROM users U
+                LEFT JOIN teachers T ON U.U_id = T.user_id
+                    WHERE U.role = 'teacher' AND T.T_id IS NULL";
         $objStatement = $this->connection->prepare($query);
         $objStatement->execute();
         $result = $objStatement->fetchAll(PDO::FETCH_ASSOC);
         if ($result) {
             return $result;
-        } 
-        else {
+        } else {
             return [];
         }
     }
 }
-?>

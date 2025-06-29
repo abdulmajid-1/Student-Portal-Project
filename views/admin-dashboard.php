@@ -97,9 +97,9 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== 'admin') {
             <div class="brand">Admin Portal</div>
             <ul>
                 <li><a href="student-view.php">Students</a></li>
+                <li><a href="teacher-view.php">Teachers</a></li>
                 <li><a href="course-view.php">Courses</a></li>
                 <li><a href="enrollment-view.php">Enrollments</a></li>
-                <li><a href="teacher-view.php">Teachers</a></li>
                 <li class="account-menu">
                     <a href="#">Account ▾</a>
                     <div class="account-dropdown">

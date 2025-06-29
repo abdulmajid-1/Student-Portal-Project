@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_attendance']) 
     foreach ($_POST['attendance'] as $studentId => $status) {
         $objTeacherController->markAttendance($studentId, $courseId, $teacherId, $date, $status);
     }
-    echo "<p>✅ Attendance marked successfully.</p>";
+    echo "<p>Attendance marked successfully.</p>";
 }
 
 // Handle Operation Selection

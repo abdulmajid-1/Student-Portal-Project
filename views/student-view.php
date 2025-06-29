@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     switch ($action) {
         case 'insert':
             $student = new Student();
-            $student->setS_id($_POST["S_id"]);
+            // $student->setS_id($_POST["S_id"]);
             $student->setUser_id($_POST["user_id"]);
             $student->setRoll_no($_POST["roll_no"]);
             $student->setDepartment($_POST["department"]);
@@ -128,8 +128,8 @@ $userList = $objUserController->getAllUsersNames(); // Must return id and name
 
             <!-- Insert Student Form -->
             <div id="insert_form" style="display:none;">
-                <label>Student ID:</label>
-                <input type="number" name="S_id"><br><br>
+                <!-- <label>Student ID:</label>
+                <input type="number" name="S_id"><br><br> -->
 
                 <label>Select User:</label>
                 <select name="user_id">

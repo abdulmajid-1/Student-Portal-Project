@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course_id'])) {
 
         <!-- Attendance Display -->
         <?php if (!empty($attendance)): ?>
-            <h3>📅 Attendance for Selected Course</h3>
+            <h3>Attendance for Selected Course</h3>
             <table>
                 <tr>
                     <th>Date</th>

@@ -2,17 +2,20 @@
 include_once '../config/db.php'; // Include your database connection file
 include_once '../models/courseModel.php'; // Include the Course model
 
-class CourseController {
+class CourseController
+{
 
     // Database connection
     private $connection;
 
-    public function __construct($connection) {
+    public function __construct($connection)
+    {
         $this->connection = $connection;
     }
 
     // Method to insert a new course
-    public function InsertCourse(Course $objCourse): int {
+    public function InsertCourse(Course $objCourse): int
+    {
 
         $courseCode = $objCourse->getCourseCode();
         $courseId = $objCourse->getCourseId();
@@ -22,7 +25,8 @@ class CourseController {
 
         $courseId = 0;
 
-        $objStatement = $this->connection->prepare("CALL add_course(?, ?, ?, ?, ?)");
+        $objStatement = $this->connection->prepare("INSERT INTO courses (code, C_id, department, name, teacher_id)
+                        VALUES (?, ?, ?, ?, ?)");
         $objStatement->bindParam(1, $courseCode);
         $objStatement->bindParam(2, $courseId);
         $objStatement->bindParam(3, $courseDep);
@@ -32,40 +36,22 @@ class CourseController {
         return $objStatement->execute();
     }
 
-    // Method to update an existing course
 
-    // public function UpdateCourse(Course $objCourse) {
-    //     $courseCode = $objCourse->getCourseCode();
-    //     $courseId = $objCourse->getCourseId();
-    //     $courseDep = $objCourse->getCourseDepartment();
-    //     $courseName = $objCourse->getCourseName();
-
-    //     $objStatement = $this->connection->prepare("CALL update_course(?, ?, ?, ?)");
-    //     $objStatement->bindParam(1, $courseCode);
-    //     $objStatement->bindParam(2, $courseId);
-    //     $objStatement->bindParam(3, $courseDep);
-    //     $objStatement->bindParam(4, $courseName);
-
-    //     return $objStatement->execute();
-    // }
-
-    public function DeleteCourse($courseId) {
+    public function DeleteCourse($courseId)
+    {
         try {
-            $stmt = $this->connection->prepare("CALL delete_course(?)");
+            $stmt = $this->connection->prepare("DELETE FROM courses WHERE C_id = ?");
             $stmt->bindParam(1, $courseId, PDO::PARAM_INT);
             $stmt->execute();
 
-           if ($stmt->rowCount() > 0) {
-               echo "Course deleted successfully!";
+            if ($stmt->rowCount() > 0) {
+                echo "Course deleted successfully!";
                 return;
-            } 
-            else {
+            } else {
                 echo "Error: No course found with ID $courseId.";
                 return;
             }
-
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Course Delete Error: " . $e->getMessage());
             echo "Deletion failed: " . htmlspecialchars($e->getMessage());
             return;
@@ -73,7 +59,8 @@ class CourseController {
     }
 
     // Method to get all courses
-    public function GetAllCourses() {
+    public function GetAllCourses()
+    {
         $objStatement = $this->connection->prepare("SELECT c.*, u.name AS teacher_name
                         FROM 
                     courses c
@@ -85,26 +72,20 @@ class CourseController {
         $result = $objStatement->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
-    public function GetAllCoursesName() : array {
-        try{
+    public function GetAllCoursesName(): array
+    {
+        try {
             $objStatement = $this->connection->prepare("SELECT C_id, name FROM courses");
             $objStatement->execute();
             $result = $objStatement->fetchAll(PDO::FETCH_ASSOC);
-            if($result){
+            if ($result) {
                 return $result;
-            }
-            else{
+            } else {
                 return [];
             }
-
-        }
-        catch(PDOException $e){
+        } catch (PDOException $e) {
             error_log("Error fetching course names: " . $e->getMessage());
             return [];
         }
     }
-
 }
-
-
-?>

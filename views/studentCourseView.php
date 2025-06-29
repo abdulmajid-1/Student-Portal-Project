@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view'])) {
                 <?php if (empty($courses)): ?>
                     <p>No courses found.</p>
                 <?php else: ?>
-                    <h3>📋 My Courses</h3>
+                    <h3>My Courses</h3>
                     <table>
                         <tr>
                             <th>Course ID</th>

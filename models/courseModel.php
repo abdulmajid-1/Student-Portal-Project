@@ -58,12 +58,9 @@ class Course
     {
         return $this->teacher_id;
     }
-    
+
     public function __toString()
     {
         return "Course Code: " . $this->getCourseCode() . ", Course ID: " . $this->getCourseId() . ", Department: " . $this->getCourseDepartment() . ", Course Name: " . $this->getCourseName();
     }
 }
-
-
-?>

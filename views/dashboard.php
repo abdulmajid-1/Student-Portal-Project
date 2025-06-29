@@ -15,16 +15,6 @@ $objdatabaseconnection = new DatabaseConnectivity();
 $connection = $objdatabaseconnection->getConnection();
 $objStudentController = new StudentController($connection);
 
-// In a real application, you would fetch this data from your database
-// $student_info = [
-//     'roll_no' => 'ST2023001',
-//     'department' => 'Computer Science',
-//     'year' => '2023',
-//     'email' => $_SESSION["email"] ?? 'student@university.edu',
-//     'courses_enrolled' => 5,
-//     'attendance_percentage' => 92.5,
-//     'cgpa' => 3.7
-// ];
 
 $student_info = $objStudentController->GetStudentDataDashboard($_SESSION["user_id"]);
 if (!$student_info) {

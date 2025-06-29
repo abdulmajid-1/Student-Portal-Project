@@ -2,17 +2,20 @@
 //require_once '../config/db.php'; // Include your database connection file
 include_once '../models/studentModel.php'; // Include the Student model
 
-class StudentController {
+class StudentController
+{
 
     // Database connection
     private $connection;
 
-    public function __construct($connection) {
+    public function __construct($connection)
+    {
         $this->connection = $connection;
     }
 
-    public function InsertStudent(Student $objStudent) {
-        $S_id = $objStudent->getS_id();
+    public function InsertStudent(Student $objStudent)
+    {
+        // $S_id = $objStudent->getS_id();
         $user_id = $objStudent->getUser_id();
         $roll_no = $objStudent->getRoll_no();
         $department = $objStudent->getDepartment();
@@ -21,50 +24,45 @@ class StudentController {
         $query = "SELECT role FROM users WHERE U_id = :user_id";
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        try{
+        try {
             $stmt->execute();
             $role = $stmt->fetchColumn(); // Fetch the user ID based on the user ID
             if ($role !== 'user') {
                 echo "Error: The user ID provided does not belong to a student.";
                 return;
             }
-        } 
-        catch (PDOException $e) {
-            error_log("InsertStudent Error: " . $e->getMessage()); // logs error
+        } catch (PDOException $e) {
+            error_log("InsertStudent Error: " . $e->getMessage());
             echo "Error: " . htmlspecialchars($e->getMessage());
             return;
         }
         // Prepare the SQL statement to insert a student
         try {
             $stmt = $this->connection->prepare("
-            INSERT INTO Students (S_id, user_id, roll_no, department, year)
-            VALUES (?, ?, ?, ?, ?)"  );
+            INSERT INTO Students (user_id, roll_no, department, year)
+            VALUES (?, ?, ?, ?)");
 
-            $stmt->bindParam(1, $S_id, PDO::PARAM_INT);
-            $stmt->bindParam(2, $user_id, PDO::PARAM_INT);
-            $stmt->bindParam(3, $roll_no);
-            $stmt->bindParam(4, $department);
-            $stmt->bindParam(5, $year);
+            // $stmt->bindParam(1, $S_id, PDO::PARAM_INT);
+            $stmt->bindParam(1, $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $roll_no);
+            $stmt->bindParam(3, $department);
+            $stmt->bindParam(4, $year);
 
             $stmt->execute();
             echo "Student inserted successfully!";
             return;
-
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("InsertStudent Error: " . $e->getMessage()); // logs error
             if (str_contains($e->getMessage(), 'Integrity constraint violation')) {
                 echo "Error: Invalid Student ID or Invalid user ID.";
-            } 
-            else {
+            } else {
                 echo "Failed to insert student: " . htmlspecialchars($e->getMessage());
             }
             return;
         }
-
-
     }
-    public function GetAllStudents(): array {
+    public function GetAllStudents(): array
+    {
         $query = "SELECT s.*, u.name AS Student_name FROM 
                     students s 
             INNER JOIN users u ON s.user_id = u.U_id;";
@@ -75,15 +73,21 @@ class StudentController {
         if ($result) {
 
             return $result;
-        } 
-        else {
+        } else {
 
             return [];
         }
     }
 
-    public function GetStudentById($id): array {
-        $query = "call getStudentByStudentId(?)";
+    public function GetStudentById($id): array
+    {
+        $query = "SELECT s.*, u.name AS Student_name
+                    FROM 
+                students s
+                    INNER JOIN 
+                users u ON s.user_id = u.U_id
+                     WHERE 
+                s.S_id = ?";
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(1, $id, PDO::PARAM_INT);
         $objStatement->execute();
@@ -91,13 +95,13 @@ class StudentController {
         if ($result) {
 
             return $result;
-        } 
-        else {
+        } else {
 
             return [];
         }
     }
-    public function DeleteStudent($id) {
+    public function DeleteStudent($id)
+    {
         $query = "DELETE FROM STUDENTS WHERE S_id = ?";
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(1, $id, PDO::PARAM_INT);
@@ -105,58 +109,35 @@ class StudentController {
         $isSuccess = $objStatement->rowCount() > 0; // Check if any rows were affected
         if ($isSuccess) {
             echo "Student deleted successfully!";
-        } 
-        else {
+        } else {
             echo "No student found with ID: $id";
         }
         return;
     }
-    public function GetStudentDataDashboard($userId): array {
-  
-        try{
+    public function GetStudentDataDashboard($userId): array
+    {
+
+        try {
             $query = "SELECT roll_no, department, year FROM Students WHERE user_id = :user_id";
             $objStatement = $this->connection->prepare($query);
             $objStatement->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $objStatement->execute();
-            $studentData = $objStatement->fetch(PDO::FETCH_ASSOC); 
-            if ($studentData){
+            $studentData = $objStatement->fetch(PDO::FETCH_ASSOC);
+            if ($studentData) {
                 return $studentData;
-            }
-            else {
+            } else {
                 return [];
             }
-
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetStudentDataDashboard Error: " . $e->getMessage()); // logs error
             echo "Error: " . htmlspecialchars($e->getMessage());
             return [];
         }
     }
 
-    // public function changePassword($userId, $newPassword) {
-    //     // Fetch user to confirm they exist
-    //     $query = "SELECT * FROM Users WHERE U_id = :user_id";
-    //     $stmt = $this->connection->prepare($query);
-    //     $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-    //     $stmt->execute();
-    //     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //     if (!$user) {
-    //         echo "User not found.";
-    //         return false;
-    //     }
-
-    //     // Update password
-    //     $query = "UPDATE Users SET password = :password WHERE U_id = :user_id";
-    //     $stmt = $this->connection->prepare($query);
-    //     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-    //     $stmt->bindParam(':password', $hashedPassword);
-    //     $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-
-    //     return $stmt->execute();
-    // }
-    public function viewMyCourses($userId): array {
+    public function viewMyCourses($userId): array
+    {
         if (!isset($_SESSION["user_id"])) {
             echo "You are not logged in.";
             return [];
@@ -186,25 +167,24 @@ class StudentController {
         $courses = $objStatement->fetchAll(PDO::FETCH_ASSOC);
 
         return $courses;
-
     }
 
-    public function GetAttendanceforStudent($user_id, $course_id) : array {
+    public function GetAttendanceforStudent($user_id, $course_id): array
+    {
 
-        try{
+        try {
             $query = "SELECT S_id FROM Students where user_id = ?";
-            $stmt = $this -> connection -> prepare($query );
-            $stmt -> bindParam(1, $user_id, PDO::PARAM_INT );
-            $stmt -> execute();
-            $student_id = $stmt -> fetchColumn();
-        }
-        catch (PDOException $e){
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindParam(1, $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $student_id = $stmt->fetchColumn();
+        } catch (PDOException $e) {
             echo "Error: " . htmlspecialchars($e->getMessage());
             return [];
         }
 
 
-        try{
+        try {
             $query = "SELECT a.date, a.status, u.name AS teacher_name
                         FROM attendance a
                     INNER JOIN courses c ON a.course_id = c.C_id
@@ -212,24 +192,23 @@ class StudentController {
                     INNER JOIN users u ON t.user_id = u.U_id
                         WHERE a.student_id = ? AND a.course_id = ?
                     ORDER BY a.date";
-            $stmt = $this -> connection -> prepare($query );
-            $stmt -> bindParam(1, $student_id, PDO::PARAM_INT );
-            $stmt -> bindParam(2, $course_id, PDO::PARAM_INT );
-            $stmt -> execute();
-            $attendance = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindParam(1, $student_id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $course_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $attendance = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $attendance;
-
-        }
-        catch (PDOException $e){
+        } catch (PDOException $e) {
             echo "Error: " . htmlspecialchars($e->getMessage());
             return [];
         }
     }
 
-    public function GetCoursesbyStudentID($user_id) : array {
+    public function GetCoursesbyStudentID($user_id): array
+    {
 
-        
-        try{
+
+        try {
             $query = "SELECT 
                 c.C_id AS course_id, 
                 c.name AS course_name, 
@@ -240,38 +219,32 @@ class StudentController {
               JOIN teachers t ON c.teacher_id = t.T_id
               JOIN users u ON t.user_id = u.U_id
                     WHERE s.user_id = ?";
-        
-            $stmt = $this -> connection -> prepare($query );
-            $stmt -> bindParam(1, $user_id, PDO::PARAM_INT );
-            $stmt -> execute();
-            $courses = $stmt -> fetchAll(PDO::FETCH_ASSOC);
-            return $courses;
 
-        }
-        catch (PDOException $e){
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindParam(1, $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $courses;
+        } catch (PDOException $e) {
             echo "Error: " . htmlspecialchars($e->getMessage());
             return [];
         }
-        
-
     }
-    public function GetAllStudentsName(): array {
+    public function GetAllStudentsName(): array
+    {
         try {
             $query = "SELECT S.S_id , U.name AS student_name FROM Students S INNER JOIN Users U ON S.user_id = U.U_id";
             $objStatement = $this->connection->prepare($query);
             $objStatement->execute();
             $result = $objStatement->fetchAll(PDO::FETCH_ASSOC);
-            if($result){
+            if ($result) {
                 return $result;
-            }
-            else {
+            } else {
                 return [];
             }
-        } 
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             error_log("GetAllStudentsName Error: " . $e->getMessage());
             return [];
         }
     }
 }
-
