@@ -5,10 +5,11 @@ USE student_portal;
 CREATE TABLE users (
     U_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
-    email VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
     password VARCHAR(255),
-    role ENUM('user', 'admin','teacher') DEFAULT 'user'
+    role ENUM('user', 'admin', 'teacher') DEFAULT 'user'
 );
+
 
 -- Students table (more student details)
 CREATE TABLE students (
