@@ -39,7 +39,11 @@ class StudentController
         // Prepare the SQL statement to insert a student
         try {
             $stmt = $this->connection->prepare("
+<<<<<<< HEAD
             INSERT INTO students (user_id, roll_no, department, year)
+=======
+            INSERT INTO Students (user_id, roll_no, department, year)
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
             VALUES (?, ?, ?, ?)");
 
             // $stmt->bindParam(1, $S_id, PDO::PARAM_INT);
@@ -102,7 +106,11 @@ class StudentController
     }
     public function DeleteStudent($id)
     {
+<<<<<<< HEAD
         $query = "DELETE FROM students WHERE S_id = ?";
+=======
+        $query = "DELETE FROM STUDENTS WHERE S_id = ?";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(1, $id, PDO::PARAM_INT);
         $objStatement->execute();
@@ -118,7 +126,11 @@ class StudentController
     {
 
         try {
+<<<<<<< HEAD
             $query = "SELECT roll_no, department, year FROM students WHERE user_id = :user_id";
+=======
+            $query = "SELECT roll_no, department, year FROM Students WHERE user_id = :user_id";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
             $objStatement = $this->connection->prepare($query);
             $objStatement->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $objStatement->execute();
@@ -144,7 +156,11 @@ class StudentController
         }
 
         // $userId = $_SESSION["user_id"];
+<<<<<<< HEAD
         $query = "SELECT S_id FROM students WHERE user_id = :user_id";
+=======
+        $query = "SELECT S_id FROM Students WHERE user_id = :user_id";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $objStatement->execute();
@@ -158,8 +174,13 @@ class StudentController
 
 
         $query = "SELECT c.* 
+<<<<<<< HEAD
                     FROM courses c 
                     INNER JOIN enrollments e ON c.C_id = e.course_id 
+=======
+                    FROM Courses c 
+                    INNER JOIN Enrollments e ON c.C_id = e.course_id 
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
                     WHERE e.student_id = :student_id";
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(':student_id', $student_id, PDO::PARAM_INT);
@@ -173,7 +194,11 @@ class StudentController
     {
 
         try {
+<<<<<<< HEAD
             $query = "SELECT S_id FROM students where user_id = ?";
+=======
+            $query = "SELECT S_id FROM Students where user_id = ?";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
             $stmt = $this->connection->prepare($query);
             $stmt->bindParam(1, $user_id, PDO::PARAM_INT);
             $stmt->execute();
@@ -233,7 +258,11 @@ class StudentController
     public function GetAllStudentsName(): array
     {
         try {
+<<<<<<< HEAD
             $query = "SELECT S.S_id , U.name AS student_name FROM students S INNER JOIN users U ON S.user_id = U.U_id";
+=======
+            $query = "SELECT S.S_id , U.name AS student_name FROM Students S INNER JOIN Users U ON S.user_id = U.U_id";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
             $objStatement = $this->connection->prepare($query);
             $objStatement->execute();
             $result = $objStatement->fetchAll(PDO::FETCH_ASSOC);

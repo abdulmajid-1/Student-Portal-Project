@@ -12,7 +12,11 @@
             $this -> setUserID($user_id);
             $this -> setName($name);    
             $this -> setEmail($email);
+<<<<<<< HEAD
             $this -> setPassword($password);
+=======
+            // $this -> setPassword($password);
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
             $this -> setRole($role);
 
         }

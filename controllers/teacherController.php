@@ -20,7 +20,11 @@ class TeacherController
         $hireDate = $objTeacher->getHireDate();
         $salary = $objTeacher->getSalary();
 
+<<<<<<< HEAD
         $query = "SELECT role FROM users WHERE U_id = ?";
+=======
+        $query = "SELECT role FROM Users WHERE U_id = ?";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $objStatement = $this->connection->prepare($query);
         $objStatement->bindParam(1, $userId, PDO::PARAM_INT);
         try {
@@ -37,7 +41,11 @@ class TeacherController
         }
 
 
+<<<<<<< HEAD
         $objStatement = $this->connection->prepare("INSERT INTO teachers (user_id, phone, designation, hire_date, salary) VALUES (?, ?, ?, ?, ?)");
+=======
+        $objStatement = $this->connection->prepare("INSERT INTO Teachers (user_id, phone, designation, hire_date, salary) VALUES (?, ?, ?, ?, ?)");
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $objStatement->bindParam(1, $userId, PDO::PARAM_INT);
         $objStatement->bindParam(2, $phoneNo);
         $objStatement->bindParam(3, $designation);
@@ -59,7 +67,11 @@ class TeacherController
     public function DeleteTeacher($teacherId)
     {
         try {
+<<<<<<< HEAD
             $stmt = $this->connection->prepare("DELETE FROM teachers WHERE T_id = ?");
+=======
+            $stmt = $this->connection->prepare("DELETE FROM Teachers WHERE T_id = ?");
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
             $stmt->bindParam(1, $teacherId, PDO::PARAM_INT);
             $stmt->execute();
             if ($stmt->rowCount() > 0) {

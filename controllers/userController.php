@@ -1,6 +1,10 @@
 <?php
 //require_once '../config/db.php'; // Include your database connection file
+<<<<<<< HEAD
 include_once '../models/userModel.php'; // Include the User model
+=======
+include_once '../models/UserModel.php'; // Include the User model
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
 
 class UserController
 {
@@ -20,7 +24,11 @@ class UserController
         $password = $objUser->getPassword();
         $role = $objUser->getRole();
 
+<<<<<<< HEAD
         $objstatment = $this->connection->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
+=======
+        $objstatment = $this->connection->prepare("INSERT INTO Users (name, email, password, role) VALUES (?, ?, ?, ?)");
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $objstatment->bindParam(1, $name);
         $objstatment->bindParam(2, $email);
         $objstatment->bindParam(3, $password);

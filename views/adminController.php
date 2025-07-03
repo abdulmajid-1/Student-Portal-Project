@@ -21,7 +21,11 @@ class AdminController
 
     public function changePassword($userId, $oldPassword, $newPassword)
     {
+<<<<<<< HEAD
         $query = "SELECT password FROM users WHERE U_id = :user_id";
+=======
+        $query = "SELECT password FROM Users WHERE U_id = :user_id";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $stmt = $this->connection->prepare($query);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -35,7 +39,11 @@ class AdminController
             return "Current password is incorrect.";
         }
 
+<<<<<<< HEAD
         $query = "UPDATE users SET password = :password WHERE U_id = :user_id";
+=======
+        $query = "UPDATE Users SET password = :password WHERE U_id = :user_id";
+>>>>>>> 244e2f4eefbebb5f44c6822d91d693c6f5f92baf
         $stmt = $this->connection->prepare($query);
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
         $stmt->bindParam(':password', $hashedPassword);
